@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 848409ee8ba454f42a5ddff137688a27, type: 3}
+  m_Name: CardMarkersLibrary
+  m_EditorClassIdentifier: Unity.XR.ARSubsystems::UnityEngine.XR.ARSubsystems.XRReferenceImageLibrary
+  m_GuidLow: 5566428661905500724
+  m_GuidHigh: 9306063521435587235
+  m_DataStore:
+    m_Storage: []
+  m_Images:
+  - m_SerializedGuid:
+      m_GuidLow: 5647753657459277046
+      m_GuidHigh: 17921618918971756472
+    m_SerializedTextureGuid:
+      m_GuidLow: 354899308389158683
+      m_GuidHigh: 695295395587734041
+    m_Size: {x: 0.085, y: 0.11333334}
+    m_SpecifySize: 1
+    m_Name: Card_One
+    m_Texture: {fileID: 2800000, guid: 67914f1bdb0a04ec19baf87b7a2fa609, type: 3}
+  - m_SerializedGuid:
+      m_GuidLow: 4779430884969087100
+      m_GuidHigh: 16187063053913789108
+    m_SerializedTextureGuid:
+      m_GuidLow: 3759466572998131699
+      m_GuidHigh: 3418012923193027947
+    m_Size: {x: 0.085, y: 0.11333334}
+    m_SpecifySize: 1
+    m_Name: Card_Two
+    m_Texture: {fileID: 2800000, guid: fc823ff34eed342c6b6d9deca4386f2f, type: 3}
