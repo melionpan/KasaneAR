@@ -104,17 +104,28 @@ public class CardOverlapManager : MonoBehaviour
         mixEffect.name = $"ColorMix_{color1}_{color2}";
         
         // Scale down the effect
-        mixEffect.transform.localScale = Vector3.one * 0.5f; // Adjust this value as needed
+        mixEffect.transform.localScale = Vector3.one * 0.8f; // Adjust this value as needed
         
-        // Set mixed color by modifying the particle system
-        SetParticleSystemColor(mixEffect, mixedColor);
+        // Apply the mixed color to the particle system
+        ParticleSystem ps = mixEffect.GetComponent<ParticleSystem>();
+        if (ps != null)
+        {
+            var main = ps.main;
+            main.startColor = mixedColor;
         
-        // Set mixed color
-        //Renderer renderer = mixEffect.GetComponent<Renderer>();
-        //if (renderer != null)
-        //{
-        //    renderer.material.color = mixedColor;
-        //}
+            // Optional: Make colors more intense
+            Color intenseColor = new Color(
+                Mathf.Clamp01(mixedColor.r * 1.3f),
+                Mathf.Clamp01(mixedColor.g * 1.3f), 
+                Mathf.Clamp01(mixedColor.b * 1.3f),
+                mixedColor.a
+            );
+            main.startColor = intenseColor;
+        }
+        else
+        {
+            Debug.LogWarning("No ParticleSystem found on mixing effect prefab!");
+        }
         
         // Add tap to spawn functionality
         MixedColorObject mixedObject = mixEffect.AddComponent<MixedColorObject>();
@@ -130,20 +141,6 @@ public class CardOverlapManager : MonoBehaviour
         }
         
         Debug.Log($"Color mix created: {color1} + {color2} = {mixedColor}");
-    }
-    
-    void SetParticleSystemColor(GameObject particleObject, Color color)
-    {
-        ParticleSystem particleSystem = particleObject.GetComponent<ParticleSystem>();
-        if (particleSystem != null)
-        {
-            var mainModule = particleSystem.main;
-            mainModule.startColor = color;
-        
-            // You can also adjust other particle properties here
-            mainModule.startSize = 0.05f; // Smaller particles
-            mainModule.startSpeed = 0.2f; // Slower movement
-        }
     }
     
     void UpdateMixPosition((ARTrackedImage, ARTrackedImage) pair, Vector3 pos1, Vector3 pos2)
