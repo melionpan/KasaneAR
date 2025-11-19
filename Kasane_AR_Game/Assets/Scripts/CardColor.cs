@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class CardColor : MonoBehaviour
 {
-    public Color CurrentColor { get; private set; } = Color.white;
+    public Color currentColor { get; private set; } = Color.white;
     
     [Header("Debug Settings")]
     [SerializeField] private bool debugMode = true;
@@ -20,13 +20,13 @@ public class CardColor : MonoBehaviour
     // Check if card has been colored (not white)
     public bool IsColored()
     {
-        return CurrentColor != Color.white;
+        return currentColor != Color.white;
     }
     
     // Apply a new color to the card and update visual effects
     public void ApplyColor(Color newColor)
     {
-        CurrentColor = newColor;
+        currentColor = newColor;
         
         // Remove old color effect object
         if (colorEffect != null)

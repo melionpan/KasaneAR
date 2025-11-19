@@ -8,7 +8,8 @@ public class ColorInteractionManager : MonoBehaviour
     [Header("References")]
     [SerializeField] private CardTracker cardDetection;
     [SerializeField] private ColorPotSpawner potSpawner;
-    
+    [SerializeField] private AudioSource cardInteractionColoredSound;
+
     void Update()
     {
         CheckCardPotInteractions();
@@ -52,6 +53,17 @@ public class ColorInteractionManager : MonoBehaviour
                 {
                     Debug.Log($"SUCCESS! Card touching {pot.color} pot! Distance: {distance:F3}m");
                     cardColor.ApplyColor(pot.color);
+                    
+                    // Play sound effect
+                    if (cardInteractionColoredSound != null)
+                    {
+                        Debug.Log("PLAY SOUND NOW!");
+                        cardInteractionColoredSound.Play();
+                    }
+                    else
+                    {
+                        Debug.Log("NO AUDIOSOURCE ASSIGNED!");
+                    }
                     
                     // Visual feedback
                     StartCoroutine(PotInteractionFeedback(pot.potObject));
