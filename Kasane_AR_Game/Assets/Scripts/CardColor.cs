@@ -66,7 +66,7 @@ public class CardColor : MonoBehaviour
         // Wird in Phase 2 implementiert - vorerst nur Debug
         if (debugMode)
         {
-            Debug.Log($"🎨 Karte würde eingefärbt: {color}");
+            Debug.Log($"Karte würde eingefärbt: {color}");
         }
         return null;
     }

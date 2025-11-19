@@ -14,7 +14,7 @@ public class GameCoordinator : MonoBehaviour
     
     void OnFirstCardDetected()
     {
-        Debug.Log("🎯 First card detected - spawning pots");
+        Debug.Log("First card detected - spawning pots");
         
         // Calculate spawn position based on detected card
         Vector3 cardsCenter = CalculateCardsCenter();
