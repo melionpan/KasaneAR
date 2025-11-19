@@ -6556,7 +6556,7 @@ MonoBehaviour:
   - {r: 0, g: 0, b: 1, a: 1}
   - {r: 0, g: 1, b: 0, a: 1}
   - {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  potSpacing: 0.06
+  potSpacing: 0.08
   zOffsetFromCards: 0.2
 --- !u!1 &1835809108 stripped
 GameObject:
@@ -8242,6 +8242,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardTracker
   trackedImageManager: {fileID: 608830361}
   cardVisualPrefab: {fileID: 8988646052180414032, guid: 45bb7ad1b52564b4091c792c7b8e5050, type: 3}
+  positionOffset: {x: 0, y: -0.01, z: 0}
+  rotationOffsetEuler: {x: 0, y: 90, z: 0}
 --- !u!4 &2132021169
 Transform:
   m_ObjectHideFlags: 0

@@ -11,6 +11,11 @@ public class CardColor : MonoBehaviour
     private GameObject colorEffect;
     private GameObject debugCube;
     private Renderer debugRenderer;
+
+    private bool allowDebugVisual = false;
+    
+    public void EnableDebugVisual() => allowDebugVisual = true;
+    public void DisableDebugVisual() => allowDebugVisual = false;
     
     // Check if card has been colored (not white)
     public bool IsColored()
@@ -68,6 +73,8 @@ public class CardColor : MonoBehaviour
     
     void CreateDebugVisual()
     {
+        if (!allowDebugVisual) return;
+        
         // Debug-Cube für Testing
         debugCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
         debugCube.transform.SetParent(transform);
@@ -87,7 +94,7 @@ public class CardColor : MonoBehaviour
     
     void Start()
     {
-        if (debugMode)
+        if (debugMode && allowDebugVisual)
         {
             CreateDebugVisual();
         }
