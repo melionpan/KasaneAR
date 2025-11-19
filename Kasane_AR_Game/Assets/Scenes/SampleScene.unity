@@ -1253,6 +1253,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2512387470528047738, guid: 48cb3fb68c91eb94999fd99957eb0cae, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1560000636}
+    - targetCorrespondingSourceObject: {fileID: 2512387470528047738, guid: 48cb3fb68c91eb94999fd99957eb0cae, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1553500800}
     - targetCorrespondingSourceObject: {fileID: 2512387470890420967, guid: 48cb3fb68c91eb94999fd99957eb0cae, type: 3}
       insertIndex: 0
       addedObject: {fileID: 436358034}
@@ -6267,6 +6270,56 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1545687380}
   m_CullTransparentMesh: 1
+--- !u!1 &1553500799
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1553500800}
+  - component: {fileID: 1553500801}
+  m_Layer: 0
+  m_Name: CardOverlapManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1553500800
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1553500799}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 331264287}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1553500801
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1553500799}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d703cf5673354e3aa54cf6b1467209e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CardOverlapManager
+  cardTracker: {fileID: 2132021168}
+  mixingEffectPrefab: {fileID: 5946817690591962921, guid: 794ffb5c0754640ada970bf4bbd3fd6e, type: 3}
+  mixSoundEffect: {fileID: 1560000637}
+  overlapCheckInterval: 0.2
+  maxOverlapDistance: 0.15
+  minMixTime: 1
 --- !u!1 &1560000635
 GameObject:
   m_ObjectHideFlags: 0
@@ -6443,6 +6496,8 @@ MonoBehaviour:
   cardDetection: {fileID: 2132021168}
   potSpawner: {fileID: 1796759435}
   interactionManager: {fileID: 188148737}
+  overlapManager: {fileID: 1553500801}
+  mixingEffectPrefab: {fileID: 5946817690591962921, guid: 794ffb5c0754640ada970bf4bbd3fd6e, type: 3}
 --- !u!1 &1756045394
 GameObject:
   m_ObjectHideFlags: 0

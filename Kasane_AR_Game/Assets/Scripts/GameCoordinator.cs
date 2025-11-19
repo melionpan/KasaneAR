@@ -6,10 +6,20 @@ public class GameCoordinator : MonoBehaviour
     [SerializeField] private CardTracker cardDetection;
     [SerializeField] private ColorPotSpawner potSpawner;
     [SerializeField] private ColorInteractionManager interactionManager;
+    [SerializeField] private CardOverlapManager overlapManager;
+
+    [Header("Prefabs")]
+    [SerializeField] private GameObject mixingEffectPrefab;
     
     void Start()
     {
         cardDetection.OnFirstCardDetected += OnFirstCardDetected;
+        
+        // Setup overlap manager
+        if (overlapManager != null)
+        {
+            // Configure additional settings here
+        }
     }
     
     void OnFirstCardDetected()
