@@ -11,7 +11,7 @@ public class CardOverlapManager : MonoBehaviour
     
     [Header("Overlap Settings")]
     [SerializeField] private float overlapCheckInterval = 0.2f;
-    [SerializeField] private float maxOverlapDistance = 0.15f;
+    [SerializeField] private float maxOverlapDistance = 0.03f;
     
     private readonly Dictionary<(ARTrackedImage, ARTrackedImage), GameObject> activeMixes = new();
     

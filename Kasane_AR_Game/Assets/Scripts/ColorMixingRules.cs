@@ -22,7 +22,6 @@ public static class ColorMixingRules
     public static Color MixColors(Color color1, Color color2)
     {
         // Check if we have a specific mixing rule
-        var key = (color1, color2);
         if (MixingRules.TryGetValue((color1, color2), out Color result))
         {
             return result;

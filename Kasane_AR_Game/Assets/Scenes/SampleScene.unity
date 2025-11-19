@@ -6318,8 +6318,7 @@ MonoBehaviour:
   mixingEffectPrefab: {fileID: 5946817690591962921, guid: 794ffb5c0754640ada970bf4bbd3fd6e, type: 3}
   mixSoundEffect: {fileID: 1560000637}
   overlapCheckInterval: 0.2
-  maxOverlapDistance: 0.15
-  minMixTime: 1
+  maxOverlapDistance: 0.03
 --- !u!1 &1560000635
 GameObject:
   m_ObjectHideFlags: 0
