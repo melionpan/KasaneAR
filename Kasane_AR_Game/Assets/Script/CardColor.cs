@@ -3,35 +3,56 @@ using UnityEngine;
 public class CardColor : MonoBehaviour
 {
     public Color CurrentColor { get; private set; } = Color.white;
-    private GameObject colorEffect;
     
     [Header("Debug Settings")]
     [SerializeField] private bool debugMode = true;
     [SerializeField] private Color debugColor = Color.white;
     
+    private GameObject colorEffect;
     private GameObject debugCube;
     private Renderer debugRenderer;
     
+    // Check if card has been colored (not white)
     public bool IsColored()
     {
         return CurrentColor != Color.white;
     }
     
+    // Apply a new color to the card and update visual effects
     public void ApplyColor(Color newColor)
     {
         CurrentColor = newColor;
         
-        // Altes Farb-Objekt entfernen
+        // Remove old color effect object
         if (colorEffect != null)
             Destroy(colorEffect);
             
-        // Neues farbiges Objekt spawnen (für Phase 2)
+        // Create new color effect object
         colorEffect = CreateColorEffect(newColor);
         
-        // Debug-Farbe aktualisieren
+        // Update debug color visualization
         if (debugMode && debugRenderer != null)
         {
             debugRenderer.material.color = newColor;
+        }
+    }
+    
+    public void SetDebugColor(Color color)
+    {
+        debugColor = color;
+        if (debugMode && debugRenderer != null)
+        {
+            debugRenderer.material.color = color;
+        }
+    }
+    
+    // Update visual feedback based on tracking quality
+    public void SetTrackingQuality(float quality)
+    {
+        if (debugMode && debugRenderer != null)
+        {
+            Color qualityColor = Color.Lerp(Color.red, Color.green, quality);
+            debugRenderer.material.color = qualityColor;
         }
     }
     
@@ -43,14 +64,6 @@ public class CardColor : MonoBehaviour
             Debug.Log($"🎨 Karte würde eingefärbt: {color}");
         }
         return null;
-    }
-    
-    void Start()
-    {
-        if (debugMode)
-        {
-            CreateDebugVisual();
-        }
     }
     
     void CreateDebugVisual()
@@ -72,29 +85,17 @@ public class CardColor : MonoBehaviour
             Destroy(debugCollider);
     }
     
-    public void SetDebugColor(Color color)
+    void Start()
     {
-        debugColor = color;
-        if (debugMode && debugRenderer != null)
+        if (debugMode)
         {
-            debugRenderer.material.color = color;
-        }
-    }
-    
-    // Für besseres Tracking-Feedback
-    public void SetTrackingQuality(float quality)
-    {
-        if (debugMode && debugRenderer != null)
-        {
-            // Farbe basierend auf Tracking-Qualität
-            Color qualityColor = Color.Lerp(Color.red, Color.green, quality);
-            debugRenderer.material.color = qualityColor;
+            CreateDebugVisual();
         }
     }
     
     void OnDestroy()
     {
-        // Aufräumen
+        // Clean up objects
         if (debugCube != null)
             Destroy(debugCube);
         if (colorEffect != null) 
