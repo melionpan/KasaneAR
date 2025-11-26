@@ -56,12 +56,6 @@ public class ColorInteractionManager : MonoBehaviour
         // Check if color would actually change
         if (cardColor.WouldChangeColor(pot.color))
         {
-            // Option A: Reset to white first
-            if (resetToWhiteFirst && cardColor.IsColored())
-            {
-                cardColor.ResetColor();
-                Debug.Log("Card reset to white before applying new color");
-            }
             
             // Apply the new color
             cardColor.ApplyColor(pot.color);

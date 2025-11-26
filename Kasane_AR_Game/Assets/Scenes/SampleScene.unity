@@ -624,6 +624,8 @@ MonoBehaviour:
   cardDetection: {fileID: 2132021168}
   potSpawner: {fileID: 1796759435}
   cardInteractionColoredSound: {fileID: 1560000637}
+  allowMultipleRecoloring: 1
+  resetToWhiteFirst: 0
 --- !u!1 &212114235
 GameObject:
   m_ObjectHideFlags: 0
@@ -6796,6 +6798,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ColorPotSpawner
   colorPotPrefab: {fileID: 3599885033297025891, guid: c02fc254ae4ea49b9a44506aa4145b6c, type: 3}
   potColors:
+  - {r: 1, g: 1, b: 1, a: 1}
   - {r: 1, g: 0, b: 0, a: 1}
   - {r: 0, g: 0, b: 1, a: 1}
   - {r: 0, g: 1, b: 0, a: 1}
@@ -8491,7 +8494,6 @@ MonoBehaviour:
   rotationOffsetEuler: {x: 0, y: 90, z: 0}
   trackingSmoothing: 0.7
   enableTrackingSmoothing: 1
-  autoDestroyDelay: 2.5
 --- !u!4 &2132021169
 Transform:
   m_ObjectHideFlags: 0

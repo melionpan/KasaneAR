@@ -18,13 +18,13 @@ public class ColorPotSpawner : MonoBehaviour
     
     [Header("Spawn Configuration")]
     [SerializeField] private Color[] potColors = {
-        Color.red, Color.blue, Color.green, 
+        Color.white, Color.red, Color.blue, Color.green, 
         Color.yellow
     };
     [SerializeField] private float potSpacing = 0.08f;
     [SerializeField] private float zOffsetFromCards = 0.2f;
     
-    private List<ColorPot> colorPots = new List<ColorPot>();    
+    private List<ColorPot> colorPots = new();    
     
     // Spawn color pots in a row relative to the cards' position
     public List<ColorPot> SpawnPots(Vector3 cardsCenter, float tableHeight)
