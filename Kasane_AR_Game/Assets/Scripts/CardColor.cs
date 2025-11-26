@@ -14,9 +14,9 @@ public class CardColor : MonoBehaviour
     private GameObject colorEffect;
     private GameObject debugCube;
     private Renderer debugRenderer;
-    private bool allowDebugVisual = false;
+    private bool allowDebugVisual;
     private float lastVisibilityChangeTime;
-    private bool wasVisible = false;
+    private bool wasVisible;
     
     public void EnableDebugVisual() => allowDebugVisual = true;
     public void DisableDebugVisual() => allowDebugVisual = false;
@@ -25,6 +25,24 @@ public class CardColor : MonoBehaviour
     public bool IsColored()
     {
         return currentColor != Color.white;
+    }
+    
+    public void ResetColor()
+    {
+        currentColor = Color.white;
+    
+        if (colorEffect != null)
+            Destroy(colorEffect);
+        
+        if (debugMode && debugRenderer != null)
+        {
+            debugRenderer.material.color = Color.white;
+        }
+    }
+    
+    public bool WouldChangeColor(Color newColor)
+    {
+        return currentColor != newColor;
     }
     
     // More stable version that checks if card has been stable for a while
@@ -46,6 +64,11 @@ public class CardColor : MonoBehaviour
     // Apply a new color to the card and update visual effects
     public void ApplyColor(Color newColor)
     {
+        if (currentColor != newColor)
+        {
+            Debug.Log($"Card color changing from {currentColor} to {newColor}");
+        }
+        
         currentColor = newColor;
         
         if (colorEffect != null)
@@ -79,7 +102,6 @@ public class CardColor : MonoBehaviour
     
     private GameObject CreateColorEffect(Color color)
     {
-        // Wird in Phase 2 implementiert - vorerst nur Debug
         if (debugMode)
         {
             Debug.Log($"Karte würde eingefärbt: {color}");
@@ -125,5 +147,11 @@ public class CardColor : MonoBehaviour
             Destroy(debugCube);
         if (colorEffect != null) 
             Destroy(colorEffect);
+    }
+    
+    
+    public bool CanRecolor()
+    {
+        return IsStableAndColored();
     }
 }

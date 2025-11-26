@@ -10,6 +10,10 @@ public class ColorInteractionManager : MonoBehaviour
     [SerializeField] private ColorPotSpawner potSpawner;
     [SerializeField] private AudioSource cardInteractionColoredSound;
 
+    [Header("Recoloring Settings")]
+    [SerializeField] private bool allowMultipleRecoloring = true;
+    [SerializeField] private bool resetToWhiteFirst;
+    
     void Update()
     {
         CheckCardPotInteractions();
@@ -23,53 +27,62 @@ public class ColorInteractionManager : MonoBehaviour
         foreach (var cardPair in cards)
         {
             GameObject cardVisual = cardPair.Value;
-            
             if (cardVisual == null) continue;
             
             CardColor cardColor = cardVisual.GetComponent<CardColor>();
-            if (cardColor == null || cardColor.IsColored()) continue;
+            if (cardColor == null) continue;
             
-            // CRITICAL FIX: Use CARD VISUAL POSITION instead of AR position
             Vector3 cardWorldPosition = cardVisual.transform.position;
             
-            Debug.Log($"Card Visual at: {cardWorldPosition}");
-            
-            // Check distance to each pot
             foreach (var pot in pots)
             {
                 if (pot.potObject == null) continue;
                 
-                // USE CARD VISUAL POSITION for distance calculation
                 float distance = Vector3.Distance(cardWorldPosition, pot.potObject.transform.position);
                 
-                // Debug when close
-                if (distance < 0.3f) // Log if within 30cm
-                {
-                    Debug.Log($"Card-Pot distance: {distance:F3}m | Card: {cardWorldPosition} | Pot: {pot.potObject.transform.position}");
-                }
-                
-                // Check if card is within activation radius of pot
                 if (distance < pot.activationRadius)
                 {
-                    Debug.Log($"SUCCESS! Card touching {pot.color} pot! Distance: {distance:F3}m");
-                    cardColor.ApplyColor(pot.color);
-                    
-                    // Play sound effect
-                    if (cardInteractionColoredSound != null)
-                    {
-                        Debug.Log("PLAY SOUND NOW!");
-                        cardInteractionColoredSound.Play();
-                    }
-                    else
-                    {
-                        Debug.Log("NO AUDIOSOURCE ASSIGNED!");
-                    }
-                    
-                    // Visual feedback
-                    StartCoroutine(PotInteractionFeedback(pot.potObject));
+                    HandleCardRecoloring(cardColor, pot);
                     break;
                 }
             }
+        }
+    }
+    
+    private void HandleCardRecoloring(CardColor cardColor, ColorPotSpawner.ColorPot pot)
+    {
+        Debug.Log($"SUCCESS! Card touching {pot.color} pot! Current card color: {cardColor.currentColor}");
+        
+        // Check if color would actually change
+        if (cardColor.WouldChangeColor(pot.color))
+        {
+            // Option A: Reset to white first
+            if (resetToWhiteFirst && cardColor.IsColored())
+            {
+                cardColor.ResetColor();
+                Debug.Log("Card reset to white before applying new color");
+            }
+            
+            // Apply the new color
+            cardColor.ApplyColor(pot.color);
+            
+            // Play sound effect
+            if (cardInteractionColoredSound != null)
+            {
+                Debug.Log("PLAY SOUND NOW!");
+                cardInteractionColoredSound.Play();
+            }
+            else
+            {
+                Debug.Log("NO AUDIOSOURCE ASSIGNED!");
+            }
+            
+            // Visual feedback
+            StartCoroutine(PotInteractionFeedback(pot.potObject));
+        }
+        else
+        {
+            Debug.Log($"Card already has color {pot.color} - no change needed");
         }
     }
     
@@ -82,5 +95,17 @@ public class ColorInteractionManager : MonoBehaviour
         yield return new WaitForSeconds(0.3f);
         
         pot.transform.localScale = originalScale;
+    }
+    
+    public void SetAllowMultipleRecoloring(bool allow)
+    {
+        allowMultipleRecoloring = allow;
+        Debug.Log($"Multiple recoloring: {(allow ? "ENABLED" : "DISABLED")}");
+    }
+    
+    public void SetResetToWhiteFirst(bool resetFirst)
+    {
+        resetToWhiteFirst = resetFirst;
+        Debug.Log($"Reset to white first: {(resetFirst ? "ENABLED" : "DISABLED")}");
     }
 }
