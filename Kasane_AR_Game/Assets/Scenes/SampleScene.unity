@@ -1170,7 +1170,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2512387470528047718, guid: 48cb3fb68c91eb94999fd99957eb0cae, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2512387470528047719, guid: 48cb3fb68c91eb94999fd99957eb0cae, type: 3}
       propertyPath: m_Name
@@ -6316,9 +6316,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardOverlapManager
   cardTracker: {fileID: 2132021168}
   mixingEffectPrefab: {fileID: 5946817690591962921, guid: 794ffb5c0754640ada970bf4bbd3fd6e, type: 3}
-  mixSoundEffect: {fileID: 1560000637}
-  overlapCheckInterval: 0.2
-  maxOverlapDistance: 0.03
+  greenObjectPrefab: {fileID: 1422889911198644253, guid: 17040e010b1c47746a9ad01ba1a57688, type: 3}
+  brownObjectPrefab: {fileID: 808434983981790816, guid: e2d7ea7422987f14197d8befa41911ab, type: 3}
+  orangeObjectPrefab: {fileID: 6077825517818676015, guid: 4b12b415f689c64439a7d22f043b91db, type: 3}
+  purpleObjectPrefab: {fileID: 8115985718848856315, guid: 5ffa8ec27fcf036439322b0ef74ca02f, type: 3}
+  overlapDistance: 0.05
+  mixDuration: 1.5
+  effectHeightOffset: 0.02
 --- !u!1 &1560000635
 GameObject:
   m_ObjectHideFlags: 0
@@ -8101,7 +8105,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2099970465}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 30f0e07d95a4d497bbc3dbd22d792191, type: 3}
   m_Name: 

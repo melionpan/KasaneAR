@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.XR.ARFoundation;
@@ -7,18 +8,23 @@ public class CardOverlapManager : MonoBehaviour
     [Header("References")]
     [SerializeField] private CardTracker cardTracker;
     [SerializeField] private GameObject mixingEffectPrefab;
-    [SerializeField] private AudioSource mixSoundEffect;
     
-    [Header("Overlap Settings")]
-    [SerializeField] private float overlapCheckInterval = 0.2f;
-    [SerializeField] private float maxOverlapDistance = 0.03f;
+    [Header("Spawnable Objects")]
+    [SerializeField] private GameObject greenObjectPrefab;
+    [SerializeField] private GameObject brownObjectPrefab;
+    [SerializeField] private GameObject orangeObjectPrefab;
+    [SerializeField] private GameObject purpleObjectPrefab;
     
-    private readonly Dictionary<(ARTrackedImage, ARTrackedImage), GameObject> activeMixes = new();
+    [Header("Settings")]
+    [SerializeField] private float overlapDistance = 0.05f;
+    [SerializeField] private float mixDuration = 1.5f;
+    [SerializeField] private float effectHeightOffset = 0.02f;
     
-    void Start()
+    private Dictionary<(ARTrackedImage, ARTrackedImage), MixSession> activeMixes = new();
+    
+    void Update()
     {
-        // Start checking for overlaps
-        InvokeRepeating(nameof(CheckCardOverlaps), 0f, overlapCheckInterval);
+        CheckCardOverlaps();
     }
     
     void CheckCardOverlaps()
@@ -26,142 +32,178 @@ public class CardOverlapManager : MonoBehaviour
         var cards = cardTracker.GetAllTrackedCards();
         var processedPairs = new HashSet<(ARTrackedImage, ARTrackedImage)>();
         
-        // Check all card combinations for overlaps
         foreach (var card1 in cards)
         {
             foreach (var card2 in cards)
             {
                 if (card1.Key == card2.Key) continue;
                 
-                // Create ordered pair to avoid duplicates
                 var pair = GetOrderedPair(card1.Key, card2.Key);
                 if (processedPairs.Contains(pair)) continue;
-                
                 processedPairs.Add(pair);
                 
-                // Get card visuals
-                GameObject visual1 = card1.Value;
-                GameObject visual2 = card2.Value;
+                if (card1.Value == null || card2.Value == null) continue;
                 
-                if (visual1 == null || visual2 == null) continue;
+                float distance = Vector3.Distance(card1.Value.transform.position, card2.Value.transform.position);
                 
-                Vector3 visual1Pos = visual1.transform.position;
-                Vector3 visual2Pos = visual2.transform.position;
-                
-                // Check if cards are close enough to overlap
-                float distance = Vector3.Distance(visual1Pos, visual2Pos);                
-                Debug.Log($"Checking overlap between {card1.Key.referenceImage.name} and {card2.Key.referenceImage.name}: {distance:F3}m");
-            
-                if (distance < maxOverlapDistance)
+                if (distance < overlapDistance)
                 {
-                    HandleCardOverlap(card1.Key, card2.Key, visual1, visual2, distance);
+                    HandleCardOverlap(pair, card1.Value, card2.Value);
                 }
                 else
                 {
-                    HandleCardSeparation(card1.Key, card2.Key);
+                    HandleCardSeparation(pair);
                 }
             }
         }
         
-        // Clean up separated pairs
         CleanupSeparatedCards(processedPairs);
     }
-    void HandleCardOverlap(ARTrackedImage card1, ARTrackedImage card2, GameObject visual1, GameObject visual2, float distance)
-    {
-        var pair = GetOrderedPair(card1, card2);
-        
-        // If mix already exists, update position
-        if (activeMixes.ContainsKey(pair))
-        {
-            UpdateMixPosition(pair, visual1.transform.position, visual2.transform.position);
-            return;
-        }
-        
-        // Check if cards can be mixed
-        CardColor color1 = visual1.GetComponent<CardColor>();
-        CardColor color2 = visual2.GetComponent<CardColor>();
-        
-        if (color1 == null || color2 == null) return;
-        if (!color1.IsColored() || !color2.IsColored()) return;
-        if (!ColorMixingRules.CanMix(color1.currentColor, color2.currentColor)) return;
-        
-        // Create color mix
-        CreateColorMix(card1, card2, color1.currentColor, color2.currentColor, 
-                      visual1.transform.position, visual2.transform.position);
-    }
     
-    void CreateColorMix(ARTrackedImage card1, ARTrackedImage card2, Color color1, Color color2, Vector3 pos1, Vector3 pos2)
+    void HandleCardOverlap((ARTrackedImage, ARTrackedImage) pair, GameObject visual1, GameObject visual2)
     {
-        var pair = GetOrderedPair(card1, card2);
-        Color mixedColor = ColorMixingRules.MixColors(color1, color2);
-        
-        // Calculate mix position (midpoint between cards)
-        Vector3 mixPosition = (pos1 + pos2) * 0.5f;
-        mixPosition.y += 0.02f; // Add vertical offset to appear above cards
-        
-        // Create mixing effect
-        GameObject mixEffect = Instantiate(mixingEffectPrefab, mixPosition, Quaternion.identity);
-        mixEffect.name = $"ColorMix_{color1}_{color2}";
-        
-        // Scale down the effect
-        mixEffect.transform.localScale = Vector3.one * 0.8f; // Adjust this value as needed
-        
-        // Apply the mixed color to the particle system
-        ParticleSystem ps = mixEffect.GetComponent<ParticleSystem>();
-        if (ps != null)
+        if (!activeMixes.ContainsKey(pair))
         {
-            var main = ps.main;
-            main.startColor = mixedColor;
-        
-            // Optional: Make colors more intense
-            Color intenseColor = new Color(
-                Mathf.Clamp01(mixedColor.r * 1.3f),
-                Mathf.Clamp01(mixedColor.g * 1.3f), 
-                Mathf.Clamp01(mixedColor.b * 1.3f),
-                mixedColor.a
-            );
-            main.startColor = intenseColor;
+            CardColor color1 = visual1.GetComponent<CardColor>();
+            CardColor color2 = visual2.GetComponent<CardColor>();
+            
+            if (color1 != null && color2 != null && color1.IsColored() && color2.IsColored())
+            {
+                CreateMixSession(pair, color1.currentColor, color2.currentColor, 
+                    visual1.transform.position, visual2.transform.position);
+            }
         }
         else
         {
-            Debug.LogWarning("No ParticleSystem found on mixing effect prefab!");
+            UpdateMixPosition(pair, visual1.transform.position, visual2.transform.position);
         }
+    }
+    
+    void CreateMixSession((ARTrackedImage, ARTrackedImage) pair, Color color1, Color color2, Vector3 pos1, Vector3 pos2)
+    {
+        Vector3 mixPosition = CalculateEffectPosition(pos1, pos2);
+    
+        GameObject mixEffect = Instantiate(mixingEffectPrefab, mixPosition, Quaternion.identity);
+    
+        Color mixedColor = ColorMixingRules.MixColors(color1, color2);
+        ApplyColorToParticleSystem(mixEffect, mixedColor);
         
-        // Add tap to spawn functionality
-        MixedColorObject mixedObject = mixEffect.AddComponent<MixedColorObject>();
-        mixedObject.Initialize(mixedColor, pair);
-        
-        // Store reference
-        activeMixes[pair] = mixEffect;
-        
-        // Play sound effect
-        if (mixSoundEffect != null)
+        activeMixes[pair] = new MixSession {
+            MixEffect = mixEffect,
+            StartTime = Time.time,
+            MixedColor = mixedColor,
+            SpawnPosition = mixPosition,
+            HasSpawned = false
+        };
+    
+        Debug.Log($"Started mixing: {color1} + {color2} = {mixedColor}");
+    }
+
+    
+    Vector3 CalculateEffectPosition(Vector3 pos1, Vector3 pos2)
+    {
+        Vector3 mixPosition = (pos1 + pos2) * 0.5f;
+        float higherY = Mathf.Max(pos1.y, pos2.y);
+        mixPosition.y = higherY + effectHeightOffset;
+        return mixPosition;
+    }
+    
+    void ApplyColorToParticleSystem(GameObject effectObj, Color color)
+    {
+        ParticleSystem ps = effectObj.GetComponentInChildren<ParticleSystem>();
+        if (ps != null)
         {
-            mixSoundEffect.Play();
+            var main = ps.main;
+            main.startColor = color;
+            
+            if (!ps.isPlaying)
+                ps.Play();
         }
-        
-        Debug.Log($"Color mix created: {color1} + {color2} = {mixedColor}");
     }
     
     void UpdateMixPosition((ARTrackedImage, ARTrackedImage) pair, Vector3 pos1, Vector3 pos2)
     {
-        if (activeMixes.TryGetValue(pair, out GameObject mixEffect))
+        if (activeMixes.TryGetValue(pair, out MixSession session))
         {
-            // Use card visual positions, not AR marker positions
-            Vector3 mixPosition = (pos1 + pos2) * 0.5f;
-            mixPosition.y += 0.02f; // Always keep above cards
-            mixEffect.transform.position = mixPosition;
+            Vector3 mixPosition = CalculateEffectPosition(pos1, pos2);
+            session.MixEffect.transform.position = mixPosition;
+            session.SpawnPosition = mixPosition;
+            
+            if (!session.HasSpawned && Time.time - session.StartTime >= mixDuration)
+            {
+                SpawnMixedObject(session.MixedColor, session.SpawnPosition);
+                session.HasSpawned = true;
+            }
         }
     }
     
-    void HandleCardSeparation(ARTrackedImage card1, ARTrackedImage card2)
+    void SpawnMixedObject(Color mixedColor, Vector3 position)
     {
-        var pair = GetOrderedPair(card1, card2);
-        
-        if (activeMixes.TryGetValue(pair, out GameObject mixEffect))
+        GameObject prefab = GetPrefabForColor(mixedColor);
+        if (prefab != null)
         {
-            // Cards separated - remove mix effect
-            Destroy(mixEffect);
+            // Spawn object at the same height as particles (no extra offset)
+            GameObject spawnedObject = Instantiate(prefab, position, Quaternion.identity);
+            spawnedObject.transform.localScale = Vector3.one * 0.1f;
+            MakeObjectInteractive(spawnedObject);
+            Debug.Log($"Spawned: {prefab.name} at scale {spawnedObject.transform.localScale}");
+            
+            StartCoroutine(SpawnAnimation(spawnedObject));
+        }
+    }
+    
+    IEnumerator SpawnAnimation(GameObject obj)
+    {
+        Vector3 originalScale = obj.transform.localScale;
+        obj.transform.localScale = Vector3.zero;
+        
+        float duration = 0.5f;
+        float elapsed = 0f;
+        
+        while (elapsed < duration)
+        {
+            obj.transform.localScale = Vector3.Lerp(Vector3.zero, originalScale, elapsed / duration);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        
+        obj.transform.localScale = originalScale;
+    }
+    
+    void MakeObjectInteractive(GameObject obj)
+    {
+        if (obj.GetComponent<Collider>() == null)
+        {
+            obj.AddComponent<BoxCollider>();
+        }
+        obj.AddComponent<ObjectInteraction>();
+    }
+    
+    GameObject GetPrefabForColor(Color color)
+    {
+        if (IsColorSimilar(color, Color.green)) return greenObjectPrefab;
+        if (IsColorSimilar(color, new Color(0.5f, 0.25f, 0f))) return brownObjectPrefab;
+        if (IsColorSimilar(color, new Color(1f, 0.5f, 0f))) return orangeObjectPrefab;
+        if (IsColorSimilar(color, new Color(0.5f, 0f, 0.5f))) return purpleObjectPrefab;
+        return null;
+    }
+    
+    bool IsColorSimilar(Color a, Color b, float tolerance = 0.15f)
+    {
+        return Mathf.Abs(a.r - b.r) < tolerance &&
+               Mathf.Abs(a.g - b.g) < tolerance &&
+               Mathf.Abs(a.b - b.b) < tolerance;
+    }
+    
+    void HandleCardSeparation((ARTrackedImage, ARTrackedImage) pair)
+    {
+        if (activeMixes.TryGetValue(pair, out MixSession session))
+        {
+            // Only destroy particles when cards separate
+            if (session.MixEffect != null)
+            {
+                Destroy(session.MixEffect);
+            }
             activeMixes.Remove(pair);
         }
     }
@@ -180,19 +222,21 @@ public class CardOverlapManager : MonoBehaviour
         
         foreach (var pair in pairsToRemove)
         {
-            if (activeMixes.TryGetValue(pair, out GameObject mixEffect))
-            {
-                Destroy(mixEffect);
-                activeMixes.Remove(pair);
-            }
+            HandleCardSeparation(pair);
         }
     }
     
     (ARTrackedImage, ARTrackedImage) GetOrderedPair(ARTrackedImage card1, ARTrackedImage card2)
     {
-        // Ensure consistent ordering for dictionary keys
-        return card1.GetInstanceID() < card2.GetInstanceID() 
-            ? (card1, card2) 
-            : (card2, card1);
+        return card1.GetInstanceID() < card2.GetInstanceID() ? (card1, card2) : (card2, card1);
+    }
+    
+    private class MixSession
+    {
+        public GameObject MixEffect;
+        public float StartTime;
+        public Color MixedColor;
+        public Vector3 SpawnPosition;
+        public bool HasSpawned;
     }
 }
