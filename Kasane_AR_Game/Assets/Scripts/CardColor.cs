@@ -8,11 +8,15 @@ public class CardColor : MonoBehaviour
     [SerializeField] private bool debugMode = true;
     [SerializeField] private Color debugColor = Color.white;
     
+    [Header("Tracking Stability")]
+    [SerializeField] private float minVisibleTime = 0.5f; // Card must be visible for this long before reacting
+    
     private GameObject colorEffect;
     private GameObject debugCube;
     private Renderer debugRenderer;
-
     private bool allowDebugVisual = false;
+    private float lastVisibilityChangeTime;
+    private bool wasVisible = false;
     
     public void EnableDebugVisual() => allowDebugVisual = true;
     public void DisableDebugVisual() => allowDebugVisual = false;
@@ -23,19 +27,32 @@ public class CardColor : MonoBehaviour
         return currentColor != Color.white;
     }
     
+    // More stable version that checks if card has been stable for a while
+    public bool IsStableAndColored()
+    {
+        if (currentColor == Color.white) return false;
+        
+        // Only consider the card stable if it's been visible for a minimum time
+        bool isCurrentlyVisible = gameObject.activeInHierarchy;
+        if (isCurrentlyVisible && !wasVisible)
+        {
+            lastVisibilityChangeTime = Time.time;
+        }
+        wasVisible = isCurrentlyVisible;
+        
+        return isCurrentlyVisible && (Time.time - lastVisibilityChangeTime >= minVisibleTime);
+    }
+    
     // Apply a new color to the card and update visual effects
     public void ApplyColor(Color newColor)
     {
         currentColor = newColor;
         
-        // Remove old color effect object
         if (colorEffect != null)
             Destroy(colorEffect);
             
-        // Create new color effect object
         colorEffect = CreateColorEffect(newColor);
         
-        // Update debug color visualization
         if (debugMode && debugRenderer != null)
         {
             debugRenderer.material.color = newColor;
@@ -51,7 +68,6 @@ public class CardColor : MonoBehaviour
         }
     }
     
-    // Update visual feedback based on tracking quality
     public void SetTrackingQuality(float quality)
     {
         if (debugMode && debugRenderer != null)
@@ -98,6 +114,8 @@ public class CardColor : MonoBehaviour
         {
             CreateDebugVisual();
         }
+        lastVisibilityChangeTime = Time.time;
+        wasVisible = gameObject.activeInHierarchy;
     }
     
     void OnDestroy()

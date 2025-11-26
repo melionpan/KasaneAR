@@ -6343,6 +6343,7 @@ MonoBehaviour:
   overlapDistance: 0.05
   mixDuration: 1.5
   effectHeightOffset: 0.02
+  trackingStabilityThreshold: 0.8
 --- !u!1 &1560000635
 GameObject:
   m_ObjectHideFlags: 0
@@ -7607,6 +7608,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardColor
   debugMode: 1
   debugColor: {r: 1, g: 1, b: 1, a: 1}
+  minVisibleTime: 0.5
 --- !u!114 &2001374502 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6402244310720262706, guid: 48cb3fb68c91eb94999fd99957eb0cae, type: 3}
@@ -8487,6 +8489,9 @@ MonoBehaviour:
   cardVisualPrefab: {fileID: 8988646052180414032, guid: 45bb7ad1b52564b4091c792c7b8e5050, type: 3}
   positionOffset: {x: 0, y: -0.01, z: 0}
   rotationOffsetEuler: {x: 0, y: 90, z: 0}
+  trackingSmoothing: 0.7
+  enableTrackingSmoothing: 1
+  autoDestroyDelay: 2.5
 --- !u!4 &2132021169
 Transform:
   m_ObjectHideFlags: 0
