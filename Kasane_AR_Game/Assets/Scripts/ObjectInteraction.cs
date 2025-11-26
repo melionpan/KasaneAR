@@ -16,10 +16,14 @@ public class ObjectInteraction : MonoBehaviour
     private Vector3 offset;
     private Vector3 initialScale;
     
-    // Pinch zoom variables
     private bool wasPinching;
     private float initialPinchDistance;
     private Vector3 initialScaleAtPinchStart;
+    
+    private void Awake()
+    {
+        EnableAccelerometer();
+    }
     
     private void Start()
     {
@@ -101,7 +105,6 @@ public class ObjectInteraction : MonoBehaviour
         
         initialPinchDistance = Vector2.Distance(touch1, touch2);
         initialScaleAtPinchStart = transform.localScale;
-        
         isDragging = false;
     }
     
@@ -151,9 +154,24 @@ public class ObjectInteraction : MonoBehaviour
         }
     }
     
-    // Public method to reset scale if needed
-    public void ResetScale()
+    private void EnableAccelerometer()
     {
-        transform.localScale = initialScale;
+        if (Accelerometer.current != null)
+        {
+            InputSystem.EnableDevice(Accelerometer.current);
+        }
+        
+        if (SystemInfo.supportsAccelerometer)
+        {
+            Input.gyro.enabled = true;
+        }
+    }
+    
+    private void OnDestroy()
+    {
+        if (ShakeDetection.instance != null)
+        {
+            ShakeDetection.instance.UnregisterSpawnedObject(gameObject);
+        }
     }
 }

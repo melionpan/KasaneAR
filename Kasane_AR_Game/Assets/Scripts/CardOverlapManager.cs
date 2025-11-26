@@ -86,6 +86,7 @@ public class CardOverlapManager : MonoBehaviour
         GameObject mixEffect = Instantiate(mixingEffectPrefab, mixPosition, Quaternion.identity);
     
         Color mixedColor = ColorMixingRules.MixColors(color1, color2);
+        
         ApplyColorToParticleSystem(mixEffect, mixedColor);
         
         activeMixes[pair] = new MixSession {
@@ -98,7 +99,6 @@ public class CardOverlapManager : MonoBehaviour
     
         Debug.Log($"Started mixing: {color1} + {color2} = {mixedColor}");
     }
-
     
     Vector3 CalculateEffectPosition(Vector3 pos1, Vector3 pos2)
     {
@@ -142,14 +142,35 @@ public class CardOverlapManager : MonoBehaviour
         GameObject prefab = GetPrefabForColor(mixedColor);
         if (prefab != null)
         {
-            // Spawn object at the same height as particles (no extra offset)
             GameObject spawnedObject = Instantiate(prefab, position, Quaternion.identity);
             spawnedObject.transform.localScale = Vector3.one * 0.1f;
+        
+            RegisterWithShakeDetection(spawnedObject);
             MakeObjectInteractive(spawnedObject);
-            Debug.Log($"Spawned: {prefab.name} at scale {spawnedObject.transform.localScale}");
-            
             StartCoroutine(SpawnAnimation(spawnedObject));
+            Debug.Log($"Spawned: {prefab.name} at scale {spawnedObject.transform.localScale}");
         }
+    }
+    
+    private void RegisterWithShakeDetection(GameObject obj)
+    {
+        if (ShakeDetection.instance != null)
+        {
+            ShakeDetection.instance.RegisterSpawnedObject(obj);
+        }
+        else
+        {
+            Debug.LogError("ShakeDetection instance is null! Cannot register object.");
+        }
+    }
+    
+    void MakeObjectInteractive(GameObject obj)
+    {
+        if (obj.GetComponent<Collider>() == null)
+        {
+            obj.AddComponent<BoxCollider>();
+        }
+        obj.AddComponent<ObjectInteraction>();
     }
     
     IEnumerator SpawnAnimation(GameObject obj)
@@ -168,15 +189,6 @@ public class CardOverlapManager : MonoBehaviour
         }
         
         obj.transform.localScale = originalScale;
-    }
-    
-    void MakeObjectInteractive(GameObject obj)
-    {
-        if (obj.GetComponent<Collider>() == null)
-        {
-            obj.AddComponent<BoxCollider>();
-        }
-        obj.AddComponent<ObjectInteraction>();
     }
     
     GameObject GetPrefabForColor(Color color)
@@ -199,7 +211,6 @@ public class CardOverlapManager : MonoBehaviour
     {
         if (activeMixes.TryGetValue(pair, out MixSession session))
         {
-            // Only destroy particles when cards separate
             if (session.MixEffect != null)
             {
                 Destroy(session.MixEffect);
