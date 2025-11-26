@@ -15,6 +15,19 @@ public class CardOverlapManager : MonoBehaviour
     [SerializeField] private GameObject brownObjectPrefab;
     [SerializeField] private GameObject orangeObjectPrefab;
     [SerializeField] private GameObject purpleObjectPrefab;
+
+    [SerializeField] private GameObject limeGreenObjectPrefab;
+    [SerializeField] private GameObject pinkObjectPrefab;
+    [SerializeField] private GameObject lightBlueObjectPrefab;
+    [SerializeField] private GameObject lightGreenObjectPrefab;
+    [SerializeField] private GameObject lightYellowObjectPrefab;
+    [SerializeField] private GameObject tealObjectPrefab;
+    
+    [SerializeField] private GameObject whiteObjectPrefab;
+    [SerializeField] private GameObject redObjectPrefab;
+    [SerializeField] private GameObject blueObjectPrefab;
+    [SerializeField] private GameObject yellowObjectPrefab;
+    [SerializeField] private GameObject brightGreenObjectPrefab;
     
     [Header("Settings")]
     [SerializeField] private float overlapDistance = 0.05f;
