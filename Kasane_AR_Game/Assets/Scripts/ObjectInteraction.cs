@@ -16,7 +16,7 @@ public class ObjectInteraction : MonoBehaviour
     private Vector3 offset;
     private Vector3 initialScale;
     
-    private bool wasPinching;
+    private bool isPinchingThisObject;
     private float initialPinchDistance;
     private Vector3 initialScaleAtPinchStart;
     
@@ -77,16 +77,22 @@ public class ObjectInteraction : MonoBehaviour
     {
         bool isPinching = IsPinching();
         
-        if (isPinching && !wasPinching)
+        if (isPinching && !isPinchingThisObject)
         {
-            StartPinch();
+            if (IsObjectTargetedByPinch())
+            {
+                StartPinch();
+                isPinchingThisObject = true;
+            }
         }
-        else if (isPinching && wasPinching)
+        else if (isPinching && isPinchingThisObject)
         {
             ContinuePinch();
         }
-        
-        wasPinching = isPinching;
+        else if (!isPinching && isPinchingThisObject)
+        {
+            isPinchingThisObject = false;
+        }
     }
     
     private bool IsPinching()
@@ -96,6 +102,18 @@ public class ObjectInteraction : MonoBehaviour
             
         return Touchscreen.current.touches[0].press.isPressed && 
                Touchscreen.current.touches[1].press.isPressed;
+    }
+    
+    private bool IsObjectTargetedByPinch()
+    {
+        if (!IsPinching()) return false;
+        
+        Vector2 touch1 = Touchscreen.current.touches[0].position.ReadValue();
+        Vector2 touch2 = Touchscreen.current.touches[1].position.ReadValue();
+        
+        Vector2 pinchMidpoint = (touch1 + touch2) * 0.5f;
+        
+        return IsTouched(pinchMidpoint);
     }
     
     private void StartPinch()
