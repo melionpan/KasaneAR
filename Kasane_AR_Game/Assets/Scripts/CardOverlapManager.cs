@@ -185,7 +185,13 @@ public class CardOverlapManager : MonoBehaviour
         GameObject prefab = GetPrefabForColor(mixedColor);
         if (prefab != null)
         {
-            GameObject spawnedObject = Instantiate(prefab, position, Quaternion.identity);
+            Camera arCamera = Camera.main;
+            Vector3 directionToCamera = arCamera.transform.position - position;
+            
+            directionToCamera.y = 0;
+            Quaternion targetRotation = Quaternion.LookRotation(directionToCamera);
+
+            GameObject spawnedObject = Instantiate(prefab, position, targetRotation);
             spawnedObject.transform.localScale = Vector3.one * 0.1f;
             
             if (objectSpawnSound != null && objectSpawnSound.clip != null)

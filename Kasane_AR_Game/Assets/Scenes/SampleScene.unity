@@ -6491,12 +6491,12 @@ MonoBehaviour:
   orangeObjectPrefab: {fileID: 6077825517818676015, guid: 4b12b415f689c64439a7d22f043b91db, type: 3}
   purpleObjectPrefab: {fileID: 8115985718848856315, guid: 5ffa8ec27fcf036439322b0ef74ca02f, type: 3}
   limeGreenObjectPrefab: {fileID: 6224456940252133275, guid: e6758420bb20ab244a05b68ed185d46d, type: 3}
-  pinkObjectPrefab: {fileID: 0}
+  pinkObjectPrefab: {fileID: 4538858114342110109, guid: 05cdd40ea92f078498549cef979671cf, type: 3}
   lightBlueObjectPrefab: {fileID: 6694425846037771819, guid: 79490597780c0374fa334db42ad330a2, type: 3}
   lightGreenObjectPrefab: {fileID: 1397227135969740047, guid: 7f8fe02ce2c90a447861132975571507, type: 3}
   lightYellowObjectPrefab: {fileID: 511357935709623811, guid: 252d84e2d6dc6604e91321bc2d912fc8, type: 3}
   tealObjectPrefab: {fileID: 2484442875640262730, guid: d25a9e09f8dd1ae43bf23e22e724c6ea, type: 3}
-  whiteObjectPrefab: {fileID: 0}
+  whiteObjectPrefab: {fileID: 6849773654558260055, guid: db33d25094d109346b90b5f2c993c8ba, type: 3}
   redObjectPrefab: {fileID: 8890508618791391049, guid: ca29c74284c40524f8edb533636550f9, type: 3}
   blueObjectPrefab: {fileID: 2518132312620273559, guid: d5d4f8329abd4284fbe6d1d924d30fc5, type: 3}
   yellowObjectPrefab: {fileID: 1485319667670839895, guid: faddb7582ea378c44a767cc63fe84c89, type: 3}
