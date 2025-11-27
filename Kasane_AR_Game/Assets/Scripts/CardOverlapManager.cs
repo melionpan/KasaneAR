@@ -10,6 +10,10 @@ public class CardOverlapManager : MonoBehaviour
     [SerializeField] private CardTracker cardTracker;
     [SerializeField] private GameObject mixingEffectPrefab;
     
+    [Header("Audio References")]
+    [SerializeField] private AudioSource overlapStartSound;
+    [SerializeField] private AudioSource objectSpawnSound;
+    
     [Header("Spawnable Objects")]
     [SerializeField] private GameObject greenObjectPrefab;
     [SerializeField] private GameObject brownObjectPrefab;
@@ -129,6 +133,12 @@ public class CardOverlapManager : MonoBehaviour
         Color mixedColor = ColorMixingRules.MixColors(color1, color2);
         
         ApplyColorToParticleSystem(mixEffect, mixedColor);
+
+        
+        if (overlapStartSound != null && overlapStartSound.clip != null)
+        {
+            overlapStartSound.PlayOneShot(overlapStartSound.clip);
+        }
         
         activeMixes[pair] = new MixSession 
         {
@@ -177,7 +187,12 @@ public class CardOverlapManager : MonoBehaviour
         {
             GameObject spawnedObject = Instantiate(prefab, position, Quaternion.identity);
             spawnedObject.transform.localScale = Vector3.one * 0.1f;
-        
+            
+            if (objectSpawnSound != null && objectSpawnSound.clip != null)
+            {
+                objectSpawnSound.PlayOneShot(objectSpawnSound.clip);
+            }
+            
             RegisterWithShakeDetection(spawnedObject);
             MakeObjectInteractive(spawnedObject);
             StartCoroutine(SpawnAnimation(spawnedObject));
