@@ -24,7 +24,7 @@ public class CardColor : MonoBehaviour
     // Check if card has been colored (not white)
     public bool IsColored()
     {
-        return currentColor != Color.white;
+        return true;
     }
     
     public void ResetColor()
@@ -48,8 +48,6 @@ public class CardColor : MonoBehaviour
     // More stable version that checks if card has been stable for a while
     public bool IsStableAndColored()
     {
-        if (currentColor == Color.white) return false;
-        
         // Only consider the card stable if it's been visible for a minimum time
         bool isCurrentlyVisible = gameObject.activeInHierarchy;
         if (isCurrentlyVisible && !wasVisible)

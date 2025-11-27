@@ -306,10 +306,23 @@ public class CardOverlapManager : MonoBehaviour
     
     GameObject GetPrefabForColor(Color color)
     {
+        if (IsColorSimilar(color, new Color(0.6f, 0.1f, 0.8f, 1f))) return purpleObjectPrefab;
+        if (IsColorSimilar(color, new Color(1f, 0.65f, 0f, 1f))) return orangeObjectPrefab;
+        if (IsColorSimilar(color, new Color(0.6f, 0.3f, 0.1f, 1f))) return brownObjectPrefab;
+        if (IsColorSimilar(color, new Color(0.1f, 0.7f, 0.2f, 1f))) return greenObjectPrefab;
+        if (IsColorSimilar(color, new Color(0f, 0.8f, 0.8f, 1f))) return tealObjectPrefab;
+        if (IsColorSimilar(color, new Color(0.7f, 1f, 0.2f, 1f))) return limeGreenObjectPrefab;
+        if (IsColorSimilar(color, new Color(1f, 0.5f, 0.8f, 1f))) return pinkObjectPrefab;
+        if (IsColorSimilar(color, new Color(0.2f, 0.85f, 1f, 1f))) return lightBlueObjectPrefab;
+        if (IsColorSimilar(color, new Color(0.5f, 1f, 0.7f, 1f))) return lightGreenObjectPrefab;
+        if (IsColorSimilar(color, new Color(1f, 1f, 0.6f, 1f))) return lightYellowObjectPrefab;
+        
+        if (IsColorSimilar(color, Color.red)) return redObjectPrefab;
+        if (IsColorSimilar(color, Color.blue)) return blueObjectPrefab;
         if (IsColorSimilar(color, Color.green)) return greenObjectPrefab;
-        if (IsColorSimilar(color, new Color(0.5f, 0.25f, 0f))) return brownObjectPrefab;
-        if (IsColorSimilar(color, new Color(1f, 0.5f, 0f))) return orangeObjectPrefab;
-        if (IsColorSimilar(color, new Color(0.5f, 0f, 0.5f))) return purpleObjectPrefab;
+        if (IsColorSimilar(color, Color.yellow)) return yellowObjectPrefab;
+        if (IsColorSimilar(color, Color.white)) return whiteObjectPrefab;
+        
         return null;
     }
     
